@@ -1,0 +1,38 @@
+"""The weather service that clients use to get forecasts."""
+
+from weather_service.models import Forecast, ForecastRequest
+from weather_service.provider import WeatherProvider
+
+
+class WeatherService:
+    """Gets weather forecasts from a weather provider.
+
+    The service depends only on the abstract ``WeatherProvider`` interface,
+    so any provider, mock or real, can be passed in.
+    """
+
+    def __init__(self, provider: WeatherProvider, api_key: str) -> None:
+        """Create the service.
+
+        Args:
+            provider: The source of weather data.
+            api_key: The key sent to the provider with every request.
+        """
+        self._provider = provider
+        self._api_key = api_key
+
+    def get_forecast(self, city: str) -> Forecast:
+        """Get the weather forecast for a city.
+
+        Args:
+            city: Name of the city to get the forecast for.
+
+        Returns:
+            The forecast for the city.
+
+        Raises:
+            InvalidAPIKeyError: If the provider rejects the API key.
+            CityNotFoundError: If the provider has no forecast for the city.
+        """
+        request = ForecastRequest(city=city, api_key=self._api_key)
+        return self._provider.fetch_forecast(request)
