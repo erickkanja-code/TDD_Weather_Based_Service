@@ -8,6 +8,9 @@ from weather_service.provider import WeatherProvider
 
 logger = logging.getLogger(__name__)
 
+from weather_service.models import Forecast, ForecastRequest
+from weather_service.provider import WeatherProvider
+
 
 class WeatherService:
     """Gets weather forecasts from a weather provider.
@@ -57,3 +60,5 @@ class WeatherService:
             forecast.condition,
         )
         return forecast
+        request = ForecastRequest(city=city, api_key=self._api_key)
+        return self._provider.fetch_forecast(request)
